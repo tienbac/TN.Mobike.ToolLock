@@ -26,6 +26,9 @@ namespace TN.Mobike.ToolLock
             ListBoxP = listBoxLock;
             RtbMessage = rtbMessageReturn;
             timer1.Enabled = true;
+
+            listBoxLock.DataSource = SessionMap.List;
+
             MinaControl.StartServer(btnConnect, rtbMessageReturn, btnDisconnect, rtbMessageReturn);
         }
 

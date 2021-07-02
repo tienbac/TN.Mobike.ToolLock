@@ -146,7 +146,7 @@ namespace TN.Mobike.ToolLock.Core
                     break;
                 case "D1": // CÀI ĐẶT KHÓA TỰ ĐỘNG TRACKING VỊ TRÍ
                     //message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,0#<LF>\n";
-                    message = $"*CMDS,OM,{imei},000000000000,D1,0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},000000000000,D1,{AppSettings.TimeTrackingLocation}#<LF>\n";
                     break;
                 case "S5": // KIỂM TRA THÔNG TIN KHÓA
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S5#<LF>\n";
