@@ -233,7 +233,7 @@ namespace TN.Mobike.ToolLock.Core
 
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : L1 -  LOCK COMMAND", Color.DarkGreen);
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER L1 : {command}", Color.DarkGreen);
-                    Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian : {time}", Color.DarkGreen);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian : {time}", Color.DarkGreen); 
                     Utilities.SetInvokeRTB(Rtbstatus, $"USER ID   : {comm[5]}", Color.DarkGreen);
                     Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian hoạt động : {timeActive}", Color.DarkGreen);
                     Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian chu kỳ : {cycle}", Color.DarkGreen);
