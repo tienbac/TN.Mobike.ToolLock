@@ -188,7 +188,7 @@ namespace TN.Mobike.ToolLock.Core
             var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), command, false);
             //var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), message, false);
 
-            Console.WriteLine(result == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail");
+            Console.WriteLine(result == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success | {message}" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail | {message}");
 
             if (result == 1)
             {
@@ -199,6 +199,7 @@ namespace TN.Mobike.ToolLock.Core
                 Utilities.SetInvokeRTB(rtb, $"Send FAIL message: {message}", Color.Red);
             }
 
+            Utilities.WriteOperationLog("Send", result == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success | {message}" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail | {message}");
             Console.WriteLine("====================================================================================================");
             return Convert.ToBoolean(result);
         }
