@@ -346,7 +346,7 @@ namespace TN.Mobike.ToolLock.Settings
                 {
                     button.BackColor = colorBg;
                     button.ForeColor = colorTxt;
-                    button.Text = text;
+                    button.Text = $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : {text}";
                     button.Enabled = isEnable;
                 });
             }
@@ -359,24 +359,30 @@ namespace TN.Mobike.ToolLock.Settings
             }
         }
 
-        public static void SetInvokeRTB(RichTextBox status, string text, Color color)
+        public static void SetInvokeRTB(RichTextBox status, string text, Color color, bool isClear = false)
         {
             if (status.InvokeRequired)
             {
                 status.BeginInvoke((MethodInvoker) delegate()
                 {
-                    ExportInformation(status, text, color);
+                    ExportInformation(status, text, color, isClear);
                 });
             }
             else
             {
-                ExportInformation(status, text, color);
+                ExportInformation(status, text, color, isClear);
             }
         }
 
-        public static void ExportInformation(RichTextBox status, string text, Color color)
+        public static void ExportInformation(RichTextBox status, string text, Color color, bool isClear)
         {
-            status.Clear();
+            if (isClear)
+            {
+                status.Clear();
+            }
+            status.SelectionColor = color;
+            status.AppendText($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : {text}" + Environment.NewLine);
+            status.ScrollToCaret();
         }
     }
 }

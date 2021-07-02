@@ -29,6 +29,7 @@ namespace TN.Mobike.ToolLock
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cbbKey = new System.Windows.Forms.ComboBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.listBoxLock = new System.Windows.Forms.ListBox();
@@ -42,7 +43,10 @@ namespace TN.Mobike.ToolLock
             this.rtbMessageReturn = new System.Windows.Forms.RichTextBox();
             this.btnDisconnect = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
+            this.lblMessage = new System.Windows.Forms.Label();
+            this.txtImei = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // cbbKey
@@ -80,7 +84,7 @@ namespace TN.Mobike.ToolLock
             // listBoxLock
             // 
             this.listBoxLock.FormattingEnabled = true;
-            this.listBoxLock.Location = new System.Drawing.Point(21, 177);
+            this.listBoxLock.Location = new System.Drawing.Point(21, 125);
             this.listBoxLock.Name = "listBoxLock";
             this.listBoxLock.Size = new System.Drawing.Size(210, 134);
             this.listBoxLock.TabIndex = 2;
@@ -120,7 +124,7 @@ namespace TN.Mobike.ToolLock
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 157);
+            this.label3.Location = new System.Drawing.Point(18, 106);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(149, 13);
             this.label3.TabIndex = 7;
@@ -138,7 +142,7 @@ namespace TN.Mobike.ToolLock
             // btnConnect
             // 
             this.btnConnect.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnConnect.Location = new System.Drawing.Point(21, 90);
+            this.btnConnect.Location = new System.Drawing.Point(21, 65);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(100, 32);
             this.btnConnect.TabIndex = 9;
@@ -158,7 +162,7 @@ namespace TN.Mobike.ToolLock
             // 
             this.btnDisconnect.Enabled = false;
             this.btnDisconnect.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnDisconnect.Location = new System.Drawing.Point(131, 90);
+            this.btnDisconnect.Location = new System.Drawing.Point(131, 65);
             this.btnDisconnect.Name = "btnDisconnect";
             this.btnDisconnect.Size = new System.Drawing.Size(100, 32);
             this.btnDisconnect.TabIndex = 11;
@@ -175,14 +179,35 @@ namespace TN.Mobike.ToolLock
             this.label5.TabIndex = 12;
             this.label5.Text = "Message :";
             // 
+            // lblMessage
+            // 
+            this.lblMessage.AutoSize = true;
+            this.lblMessage.Location = new System.Drawing.Point(371, 15);
+            this.lblMessage.Name = "lblMessage";
+            this.lblMessage.Size = new System.Drawing.Size(254, 13);
+            this.lblMessage.TabIndex = 13;
+            this.lblMessage.Text = "*CMDS,OM,861123053530935,000000000000,D0#";
+            // 
+            // txtImei
+            // 
+            this.txtImei.Location = new System.Drawing.Point(21, 301);
+            this.txtImei.Name = "txtImei";
+            this.txtImei.Size = new System.Drawing.Size(210, 20);
+            this.txtImei.TabIndex = 14;
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(371, 15);
+            this.label6.Location = new System.Drawing.Point(18, 280);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(254, 13);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "*CMDS,OM,861123053530935,000000000000,D0#";
+            this.label6.Size = new System.Drawing.Size(53, 13);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "Imei khóa";
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
             // 
@@ -190,6 +215,8 @@ namespace TN.Mobike.ToolLock
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label6);
+            this.Controls.Add(this.txtImei);
+            this.Controls.Add(this.lblMessage);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.btnDisconnect);
             this.Controls.Add(this.rtbMessageReturn);
@@ -226,7 +253,10 @@ namespace TN.Mobike.ToolLock
         private System.Windows.Forms.RichTextBox rtbMessageReturn;
         private System.Windows.Forms.Button btnDisconnect;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.TextBox txtImei;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

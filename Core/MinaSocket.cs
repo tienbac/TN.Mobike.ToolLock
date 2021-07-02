@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,8 +13,6 @@ namespace TN.Mobike.ToolLock.Core
 {
     class MinaSocket : IoHandlerAdapter
     {
-
-        public static ListBox listData;
 
         public override void ExceptionCaught(IoSession session, Exception cause)
         {
@@ -109,6 +108,8 @@ namespace TN.Mobike.ToolLock.Core
 
         public void HandCommand(IoSession session, string command)
         {
+            RichTextBox Rtbstatus = Form1.RtbMessage;
+
             if (command.Length <= 1) return;
 
             var comm = command.Split(',').ToList();
@@ -153,6 +154,12 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"Pin       : {pin}");
                     Console.ForegroundColor = ConsoleColor.White;
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Q0 - SIGN IN COMMAND", Color.Blue);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Q0 - IMEI = {imei}", Color.Blue);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER Q0 : {command}", Color.Blue);
+                    Utilities.SetInvokeRTB(Rtbstatus, "Thời gian : {time}", Color.Blue);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Pin       : {pin}", Color.Blue);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | Q0 - SIGN IN COMMAND | Thời gian : {time} | Pin : {pin}");
 
@@ -176,6 +183,13 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"Tín hiệu : {gms}");
                     Console.ForegroundColor = ConsoleColor.White;
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : H0 - HEARTBEAT COMMAND", Color.Crimson);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER H0 : {command}", Color.Crimson);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian : {time}", Color.Crimson);
+                    Utilities.SetInvokeRTB(Rtbstatus, comm[5] == "0" ? $"Trạng thái : Đã mở khóa" : $"Trạng thái : Đã khóa", Color.Crimson);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Pin : {pin}", Color.Crimson);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Tín hiệu : {gms}", Color.Crimson);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | H0 - HEARTBEAT COMMAND | Thời gian : {time} | Pin : {pin} % | Lock (1: Lock \\ 0: Unlock) : {comm[5]} | GMS : {gms}");
 
@@ -217,12 +231,16 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RESEND : {message ?? "No Message"}");
                     Console.WriteLine(status == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail");
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : L1 -  LOCK COMMAND", Color.DarkGreen);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER L1 : {command}", Color.DarkGreen);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian : {time}", Color.DarkGreen);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"USER ID   : {comm[5]}", Color.DarkGreen);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian hoạt động : {timeActive}", Color.DarkGreen);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian chu kỳ : {cycle}", Color.DarkGreen);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
+
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L1 - LOCK COMMAND | Thời gian : {time} | User : {comm[5]} | Thời gian hoạt động : {timeActive} | Thời gian đi (Phút) : {cycle} | Định vị tự động : Tắt - {statusD1Off} | Gửi kiểm tra trạng thái : {statusS5}");
-
-
-
-
                     break;
                 case "L0":
 
@@ -232,8 +250,8 @@ namespace TN.Mobike.ToolLock.Core
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,L0#<LF>\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
 
-                    var messageD1On = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,{AppSettings.TimeTrackingLocation}#<LF>\n";
-                    var statusD1On = SessionMap.NewInstance().SendMessage(imeiL, messageD1On, false);
+                    //var messageD1On = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,{AppSettings.TimeTrackingLocation}#<LF>\n";
+                    //var statusD1On = SessionMap.NewInstance().SendMessage(imeiL, messageD1On, false);
 
                     time = $"{Utilities.ConvertDateTime(comm[3]):yyyy-MM-dd HH:mm:ss}";
                     timeActive = $"{Utilities.UnixTimeStampToDateTime(comm[7].Replace("#", ""))}";
@@ -249,13 +267,22 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($" Timestamp : {timeActive}");
                     Console.ForegroundColor = ConsoleColor.White;
 
-                    Console.WriteLine($"Send message turn on tracking location status: {statusD1On}");
+                    //Console.WriteLine($"Send message turn on tracking location status: {statusD1On}");
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RESEND : {message ?? "No Message"}");
                     Console.WriteLine(status == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail");
 
 
-                    Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]} | Định vị tự động : Bật - {statusD1On}");
-                    //Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]}");
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : L0 - UNLOCK COMMAND", Color.Tomato);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER L0 : {command}", Color.Tomato);
+                    Utilities.SetInvokeRTB(Rtbstatus, $" Thời gian : {time}", Color.Tomato);
+                    Utilities.SetInvokeRTB(Rtbstatus, comm[5] == "0" ? $"Trạng thái : Mở thành công" : $"Trạng thái : Mở lỗi", Color.Tomato);
+                    Utilities.SetInvokeRTB(Rtbstatus, $" Customer ID : {comm[6]}", Color.Tomato);
+                    Utilities.SetInvokeRTB(Rtbstatus, $" Timestamp : {timeActive}", Color.Tomato);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
+
+
+                    //Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]} | Định vị tự động : Bật - {statusD1On}");
+                    Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]}");
 
 
 
@@ -335,10 +362,13 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine(status == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail");
 
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : D0 - POSITIONING COMMAND", Color.Chocolate);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER D0 : {command}", Color.Chocolate);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Imei: {imei} | D0 - POSITIONING COMMAND | Thời gian: {time} | Trạng thái định vị (A: Active \\ V|VA: Not Active) : {data2} | Lat (Vĩ Độ): {data3} | Long (Kinh độ): {data5} | {data4} - {data6} | Point HDOP: {data8} | Altitude: {data10} | Mode (A: Định vị tự động\\ D: Khác\\ E: Ước lượng\\ N: Dữ liệu lỗi): {data12} | Resend : {status} | {location}", Color.Chocolate);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
+
+
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | D0 - POSITIONING COMMAND | Thời gian: {time} | Trạng thái định vị (A: Active \\ V|VA: Not Active) : {data2} | Lat (Vĩ Độ): {data3} | Long (Kinh độ): {data5} | {data4} - {data6} | Point HDOP: {data8} | Altitude: {data10} | Mode (A: Định vị tự động\\ D: Khác\\ E: Ước lượng\\ N: Dữ liệu lỗi): {data12} | Resend : {status} | {location}");
-
-
-
                     break;
 
                 case "D1":
@@ -351,6 +381,10 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER S5 : {command}");
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Location tracking each : {comm[5].Replace("#", "")} giây");
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : D1 - TRACKING LOCATION COMMAND", Color.Brown);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER S5 : {command}", Color.Brown);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Location tracking each : {comm[5].Replace("#", "")} giây", Color.Brown);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | D1 - TRACKING LOCATION COMMAND | Thời gian: {time} | Bật tự động gửi vị trí mỗi {comm[5].Replace("#", "")} giây");
 
@@ -376,6 +410,10 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine(comm[8] == "0" ? $"Trạng thái : Đang mở khóa" : $"Trạng thái : Đã khóa");
                     Console.ForegroundColor = ConsoleColor.White;
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : S5 - LOCK STATUS COMMAND", Color.BlueViolet);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER S5 : {command}", Color.BlueViolet);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
+
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | S5 - LOCK STATUS COMMAND | Thời gian: {time} | Pin: {pin} | GMS: {gms} | GPS: {comm[7]} | Lock (1: Lock \\ 0: Unlock): {comm[8]}");
 
@@ -398,6 +436,10 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"Reservations : {comm[6]}");
                     Console.ForegroundColor = ConsoleColor.White;
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : S8 - RINGING FOR FINDING A BIKE COMMAND", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER S8 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
+
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | S8 - RINGING FOR FINDING A BIKE COMMAND | Thời gian: {time} | Số lần đổ chuông: {comm[5]} | Reservations: {comm[6]}");
 
@@ -418,6 +460,10 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"Phiên bản : {comm[5]}");
                     Console.WriteLine($"Thời gian cập nhật : {comm[6].Replace("#", "")}");
                     Console.ForegroundColor = ConsoleColor.White;
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : G0 - QUERY FIRMWARE VERSION COMMAND", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER G0 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | G0 - QUERY FIRMWARE VERSION COMMAND | Thời gian: {time} | Phiên bản: {comm[5]} | Thời gian cập nhật: {comm[6].Replace("#", "")}");
@@ -460,6 +506,9 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RESEND : {message ?? "No Message"}");
                     Console.WriteLine(status == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail");
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : W0 - ALARMING COMMAND", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER W0 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | W0 - ALARMING COMMAND | Thời gian: {time} | Status: {statusAlarm}");
 
@@ -475,6 +524,10 @@ namespace TN.Mobike.ToolLock.Core
 
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : U0 - Detection upgrade/start upgrade");
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER U0 : {command}");
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : U0 - Detection upgrade/start upgrade", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER U0 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | U0 - Detection upgrade/start upgrade | Thời gian: {time} | Code: {comm[5]} | Date: {comm[7].Replace("#", "")} | Ver: {comm[6]}");
@@ -493,6 +546,9 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : U1 - Acquisition of upgrade data");
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER U1 : {command}");
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : U1 - Acquisition of upgrade data", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER U1 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | U1 - Acquisition of upgrade data | Thời gian: {time} | Packages: {comm[5]} | Code: {comm[6].Replace("#", "")}");
 
@@ -508,6 +564,9 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : U2 - Notification of upgrade results");
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER U2 : {command}");
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : U2 - Notification of upgrade results", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER U2 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | U2 - Notification of upgrade results | Thời gian: {time} | Code: {comm[5]} | Status: {comm[6].Replace("#", "")}");
 
@@ -522,6 +581,10 @@ namespace TN.Mobike.ToolLock.Core
 
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : K0 - set/get BLE 8 byte communication KEY");
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER U2 : {command}");
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : K0 - set/get BLE 8 byte communication KEY", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER U2 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | K0 - set/get BLE 8 byte communication KEY | Thời gian: {time} | Key: {comm[5].Replace("#", "")}");
@@ -546,6 +609,10 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"Mã ICCID  : {ICCID}");
                     Console.ForegroundColor = ConsoleColor.White;
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : I0 - OBTAIN SIM CARD ICCID CODE COMMAND", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER I0 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
+
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | I0 - OBTAIN SIM CARD ICCID CODE COMMAND | Thời gian: {time} | ICCID: {ICCID}");
 
@@ -568,6 +635,10 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"MAC address  : {macAdd}");
                     Console.ForegroundColor = ConsoleColor.White;
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : M0 - GET LOCK BLUETOOTH MAC ADDRESS", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER M0 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
+
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | M0 - GET LOCK BLUETOOTH MAC ADDRESS | Thời gian: {time} | Mac: {macAdd}");
 
@@ -586,6 +657,10 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($"Thời gian : {time}");
                     Console.WriteLine($"Key  : {key}");
                     Console.ForegroundColor = ConsoleColor.White;
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : C1 - Management biked number setting", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER C1 : {command}", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | C1 - Management biked number setting | Thời gian: {time} | Key: {key}");

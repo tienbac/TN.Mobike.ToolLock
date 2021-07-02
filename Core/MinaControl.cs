@@ -23,7 +23,9 @@ namespace TN.Mobike.ToolLock.Core
         private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static IoAcceptor acceptor;
 
-        public static void StartServer(Button btnConnect, RichTextBox rtbStatus, Button btnDisconnect)
+        private static IPAddress ipAddress;
+
+        public static void StartServer(Button btnConnect, RichTextBox rtbStatus, Button btnDisconnect, RichTextBox rtb)
         {
             try
             {
@@ -57,13 +59,15 @@ namespace TN.Mobike.ToolLock.Core
 
                 string hostName = Dns.GetHostName();
 
-                var ipAddress = IPAddress.Parse(AppSettings.HostService);
+                ipAddress = IPAddress.Parse(AppSettings.HostService);
                 //var ipAddress = Dns.GetHostByName(hostName).AddressList[0];
 
                 acceptor.Bind(new IPEndPoint(ipAddress, PORT));
 
                 Utilities.SetInvokeBtn(btnConnect, Color.Green, false, "CONNECTED", Color.White);
                 Utilities.SetInvokeBtn(btnDisconnect, Color.DarkGray, true, "DISCONNECT",Color.Black);
+
+                Utilities.SetInvokeRTB(rtb, $"Start on: {ipAddress} | Listening on port: {PORT}", Color.Green, true);
 
                 Utilities.WriteOperationLog("MinaOmni.StartServer", $"Start on: {ipAddress} | Listening on port: {PORT}");
             }
@@ -73,7 +77,7 @@ namespace TN.Mobike.ToolLock.Core
             }
         }
 
-        public static void StopServer(Button btnDisconnect, Button btnConnect)
+        public static void StopServer(Button btnDisconnect, Button btnConnect, RichTextBox rtb)
         {
             try
             {
@@ -81,6 +85,8 @@ namespace TN.Mobike.ToolLock.Core
 
                 Utilities.SetInvokeBtn(btnDisconnect, Color.Red, false, "DISCONNECTED", Color.White);
                 Utilities.SetInvokeBtn(btnConnect, Color.DarkGray, true, "CONNECT", Color.Black);
+
+                Utilities.SetInvokeRTB(rtb, $"Stop sv: {ipAddress} | Stop on port: {PORT}", Color.Red, true);
 
                 Utilities.WriteOperationLog("MinaOmni.StopServer", $"Stop server Mina Omni successful !");
             }
@@ -121,9 +127,9 @@ namespace TN.Mobike.ToolLock.Core
             return Convert.ToBoolean(result);
         }
 
-        public static bool UnLock(string key, bool check = true)
+        public static bool UnLock(RichTextBox rtb, string key,string imei, bool check = true)
         {
-            var imei = "861123053530935";
+            //var imei = "861123053530935";
             int uid = 0;
             long timestamp = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
 
@@ -175,12 +181,24 @@ namespace TN.Mobike.ToolLock.Core
 
             Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Message : {message}");
 
+            Utilities.SetInvoke(Form1.lblMessageP, message);
+
             var command = MinaSocket.AddBytes(new byte[] { (byte)0xFF, (byte)0xFF }, Encoding.ASCII.GetBytes(message));
 
             var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), command, false);
             //var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), message, false);
 
             Console.WriteLine(result == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail");
+
+            if (result == 1)
+            {
+                Utilities.SetInvokeRTB(rtb, $"Send OK message: {message}", Color.Green);
+            }
+            else
+            {
+                Utilities.SetInvokeRTB(rtb, $"Send FAIL message: {message}", Color.Red);
+            }
+
             Console.WriteLine("====================================================================================================");
             return Convert.ToBoolean(result);
         }

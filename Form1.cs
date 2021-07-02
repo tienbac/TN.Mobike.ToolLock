@@ -15,11 +15,18 @@ namespace TN.Mobike.ToolLock
 {
     public partial class Form1 : Form
     {
+        public static Label lblMessageP;
+        public static ListBox ListBoxP;
+        public static RichTextBox RtbMessage;
+
         public Form1()
         {
             InitializeComponent();
-            MinaSocket.listData = listBoxLock;
-            MinaControl.StartServer(btnConnect, rtbMessageReturn, btnDisconnect);
+            lblMessageP = lblMessage;
+            ListBoxP = listBoxLock;
+            RtbMessage = rtbMessageReturn;
+            timer1.Enabled = true;
+            MinaControl.StartServer(btnConnect, rtbMessageReturn, btnDisconnect, rtbMessageReturn);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -34,7 +41,6 @@ namespace TN.Mobike.ToolLock
             {
                 txtIpServer.Text = AppSettings.HostService;
             }
-
             txtPortOpen.Text = $"{AppSettings.PortService}";
         }
 
@@ -45,17 +51,33 @@ namespace TN.Mobike.ToolLock
 
             var item = listBoxLock.SelectedItem;
 
+            var imei = txtImei.Text;
+
+            if (String.IsNullOrEmpty(imei))
+            {
+                imei = item.ToString();
+            }
+
+            MinaControl.UnLock(rtbMessageReturn ,key, imei, true);
+
             Console.WriteLine(key);
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            MinaControl.StartServer(btnConnect, rtbMessageReturn, btnDisconnect);
+            MinaControl.StartServer(btnConnect, rtbMessageReturn, btnDisconnect, rtbMessageReturn);
         }
 
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
-            MinaControl.StopServer(btnDisconnect, btnConnect);
+            MinaControl.StopServer(btnDisconnect, btnConnect, rtbMessageReturn);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine(SessionMap.List.Count);
+            listBoxLock.DataSource = SessionMap.List;
+            listBoxLock.Refresh();
         }
     }
 }
