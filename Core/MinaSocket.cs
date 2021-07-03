@@ -202,13 +202,17 @@ namespace TN.Mobike.ToolLock.Core
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,L1#<LF>\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
 
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re L1 | Status: {status} : {message}", Color.Teal);
+
                     var messageD1Off = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,0#<LF>\n";
                     var statusD1Off = SessionMap.NewInstance().SendMessage(imeiL, messageD1Off, false);
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : OFF D1 | Status: {statusD1Off} : {messageD1Off}", Color.Teal);
 
                     var messageS5 = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S5#<LF>\n";
                     var statusS5 = SessionMap.NewInstance().SendMessage(imeiL, messageS5, false);
 
-
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : SEND S5 | Status: {statusS5} : {messageS5}", Color.Teal);
 
                     time = $"{Utilities.ConvertDateTime(comm[3]):yyyy-MM-dd HH:mm:ss}";
                     timeActive = Utilities.UnixTimeStampToDateTime(comm[6]);
@@ -249,6 +253,8 @@ namespace TN.Mobike.ToolLock.Core
                     // Resend
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,L0#<LF>\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re L0 | Status: {status} : {message}", Color.Teal);
 
                     //var messageD1On = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,{AppSettings.TimeTrackingLocation}#<LF>\n";
                     //var statusD1On = SessionMap.NewInstance().SendMessage(imeiL, messageD1On, false);
@@ -295,6 +301,9 @@ namespace TN.Mobike.ToolLock.Core
 
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,D0#<LF>\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re D0 | Status: {status} : {message}", Color.Teal);
+
 
                     var data12 = comm[17];
                     var data11 = comm[16];
@@ -476,6 +485,9 @@ namespace TN.Mobike.ToolLock.Core
 
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},W0#<LF>\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re W0 | Status: {status} : {message}", Color.Teal);
+
 
                     time = $"{Utilities.ConvertDateTime(comm[3]):yyyy-MM-dd HH:mm:ss}";
                     var alarm = comm[5].Replace("#", "");
