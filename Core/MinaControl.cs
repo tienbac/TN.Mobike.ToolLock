@@ -177,6 +177,7 @@ namespace TN.Mobike.ToolLock.Core
                     break;
                 default:
                     message = messageIn;
+                    imei = message.Split(',')[2];
                     break;
             }
 
