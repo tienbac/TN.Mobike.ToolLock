@@ -32,7 +32,6 @@ namespace TN.Mobike.ToolLock
             this.components = new System.ComponentModel.Container();
             this.cbbKey = new System.Windows.Forms.ComboBox();
             this.btnSend = new System.Windows.Forms.Button();
-            this.listBoxLock = new System.Windows.Forms.ListBox();
             this.txtIpServer = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -47,6 +46,7 @@ namespace TN.Mobike.ToolLock
             this.txtImei = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.txtMessage = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // cbbKey
@@ -65,7 +65,7 @@ namespace TN.Mobike.ToolLock
             "S1 - Khởi động lại thiết bị",
             "C0 - Mở khóa bằng mã RFID",
             "C1 - Cài đặt mã số cho khóa"});
-            this.cbbKey.Location = new System.Drawing.Point(21, 353);
+            this.cbbKey.Location = new System.Drawing.Point(21, 311);
             this.cbbKey.Name = "cbbKey";
             this.cbbKey.Size = new System.Drawing.Size(210, 21);
             this.cbbKey.TabIndex = 0;
@@ -73,21 +73,13 @@ namespace TN.Mobike.ToolLock
             // 
             // btnSend
             // 
-            this.btnSend.Location = new System.Drawing.Point(81, 406);
+            this.btnSend.Location = new System.Drawing.Point(81, 371);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(86, 32);
             this.btnSend.TabIndex = 1;
             this.btnSend.Text = "SEND";
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
-            // 
-            // listBoxLock
-            // 
-            this.listBoxLock.FormattingEnabled = true;
-            this.listBoxLock.Location = new System.Drawing.Point(21, 125);
-            this.listBoxLock.Name = "listBoxLock";
-            this.listBoxLock.Size = new System.Drawing.Size(210, 134);
-            this.listBoxLock.TabIndex = 2;
             // 
             // txtIpServer
             // 
@@ -124,16 +116,16 @@ namespace TN.Mobike.ToolLock
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 106);
+            this.label3.Location = new System.Drawing.Point(18, 130);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(149, 13);
+            this.label3.Size = new System.Drawing.Size(67, 13);
             this.label3.TabIndex = 7;
-            this.label3.Text = "Danh sách khóa đang kết nối";
+            this.label3.Text = "Gửi câu lệnh";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(18, 333);
+            this.label4.Location = new System.Drawing.Point(18, 286);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(121, 13);
             this.label4.TabIndex = 8;
@@ -190,7 +182,7 @@ namespace TN.Mobike.ToolLock
             // 
             // txtImei
             // 
-            this.txtImei.Location = new System.Drawing.Point(21, 301);
+            this.txtImei.Location = new System.Drawing.Point(21, 232);
             this.txtImei.Name = "txtImei";
             this.txtImei.Size = new System.Drawing.Size(210, 20);
             this.txtImei.TabIndex = 14;
@@ -198,22 +190,25 @@ namespace TN.Mobike.ToolLock
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(18, 280);
+            this.label6.Location = new System.Drawing.Point(18, 207);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 13);
             this.label6.TabIndex = 15;
             this.label6.Text = "Imei khóa";
             // 
-            // timer1
+            // txtMessage
             // 
-            this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.txtMessage.Location = new System.Drawing.Point(21, 155);
+            this.txtMessage.Name = "txtMessage";
+            this.txtMessage.Size = new System.Drawing.Size(210, 20);
+            this.txtMessage.TabIndex = 16;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtImei);
             this.Controls.Add(this.lblMessage);
@@ -227,7 +222,6 @@ namespace TN.Mobike.ToolLock
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtIpServer);
-            this.Controls.Add(this.listBoxLock);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.cbbKey);
             this.Name = "Form1";
@@ -242,7 +236,6 @@ namespace TN.Mobike.ToolLock
 
         private System.Windows.Forms.ComboBox cbbKey;
         private System.Windows.Forms.Button btnSend;
-        private System.Windows.Forms.ListBox listBoxLock;
         private System.Windows.Forms.TextBox txtIpServer;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -257,6 +250,7 @@ namespace TN.Mobike.ToolLock
         private System.Windows.Forms.TextBox txtImei;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.TextBox txtMessage;
     }
 }
 

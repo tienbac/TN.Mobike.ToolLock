@@ -23,11 +23,8 @@ namespace TN.Mobike.ToolLock
         {
             InitializeComponent();
             lblMessageP = lblMessage;
-            ListBoxP = listBoxLock;
             RtbMessage = rtbMessageReturn;
             timer1.Enabled = true;
-
-            listBoxLock.DataSource = SessionMap.List;
 
             MinaControl.StartServer(btnConnect, rtbMessageReturn, btnDisconnect, rtbMessageReturn);
         }
@@ -49,21 +46,21 @@ namespace TN.Mobike.ToolLock
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            var key = "";
-            key = cbbKey.SelectedItem == null ? "S5" : cbbKey.SelectedItem.ToString().Split('-')[0].Trim();
-
-            var item = listBoxLock.SelectedItem;
-
-            var imei = txtImei.Text;
-
-            if (String.IsNullOrEmpty(imei))
+            var message = txtMessage.Text;
+            if (!string.IsNullOrEmpty(message))
             {
-                imei = item.ToString();
+                MinaControl.UnLock(rtbMessageReturn, "", "", message, true);
             }
+            else
+            {
+                var key = cbbKey.SelectedItem == null ? "S5" : cbbKey.SelectedItem.ToString().Split('-')[0].Trim();
 
-            MinaControl.UnLock(rtbMessageReturn ,key, imei, true);
+                var imei = txtImei.Text;
 
-            Console.WriteLine(key);
+                MinaControl.UnLock(rtbMessageReturn, key, imei,"", true);
+
+                Console.WriteLine(key);
+            }
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -74,13 +71,6 @@ namespace TN.Mobike.ToolLock
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
             MinaControl.StopServer(btnDisconnect, btnConnect, rtbMessageReturn);
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            Console.WriteLine(SessionMap.List.Count);
-            listBoxLock.DataSource = SessionMap.List;
-            listBoxLock.Refresh();
         }
     }
 }

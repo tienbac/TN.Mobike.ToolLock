@@ -127,7 +127,7 @@ namespace TN.Mobike.ToolLock.Core
             return Convert.ToBoolean(result);
         }
 
-        public static bool UnLock(RichTextBox rtb, string key,string imei, bool check = true)
+        public static bool UnLock(RichTextBox rtb, string key,string imei, string messageIn, bool check = true)
         {
             //var imei = "861123053530935";
             int uid = 0;
@@ -176,7 +176,8 @@ namespace TN.Mobike.ToolLock.Core
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},C1,0,000000001A2B3C4D#<LF>\n";
                     break;
                 default:
-                    goto case "L0";
+                    message = messageIn;
+                    break;
             }
 
             Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Message : {message}");
