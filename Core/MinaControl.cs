@@ -187,7 +187,7 @@ namespace TN.Mobike.ToolLock.Core
 
             Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Message : {message}");
 
-            Utilities.SetInvoke(Form1.lblMessageP, message);
+            //Utilities.SetInvoke(Form1.lblMessageP, message);
 
             //var command = MinaSocket.AddBytes(new byte[] { (byte)0xFF, (byte)0xFF }, Encoding.ASCII.GetBytes(message));
 

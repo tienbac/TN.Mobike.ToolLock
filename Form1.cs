@@ -27,6 +27,8 @@ namespace TN.Mobike.ToolLock
             timer1.Enabled = true;
 
             MinaControl.StartServer(btnConnect, rtbMessageReturn, btnDisconnect, rtbMessageReturn);
+
+           JobOpenLock.Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
