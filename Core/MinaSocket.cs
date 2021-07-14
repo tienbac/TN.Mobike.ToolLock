@@ -75,7 +75,8 @@ namespace TN.Mobike.ToolLock.Core
                 if (status == IdleStatus.ReaderIdle)
                 {
                     Console.WriteLine("READER IDLE");
-
+                    SessionMap.NewInstance().RemoveSession(session);
+                    session.CloseOnFlush();
                 }
                 else if (status == IdleStatus.WriterIdle)
                 {
@@ -199,17 +200,17 @@ namespace TN.Mobike.ToolLock.Core
 
                     // Receiver : *CMDR ,OM,123456789123456,200318123020,L1,1234,1497689816,3#
 
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,L1#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,L1#\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
 
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re L1 | Status: {status} : {message}", Color.Teal);
 
-                    var messageD1Off = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,0#<LF>\n";
+                    var messageD1Off = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,0#\n";
                     var statusD1Off = SessionMap.NewInstance().SendMessage(imeiL, messageD1Off, false);
 
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : OFF D1 | Status: {statusD1Off} : {messageD1Off}", Color.Teal);
 
-                    var messageS5 = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S5#<LF>\n";
+                    var messageS5 = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S5#\n";
                     var statusS5 = SessionMap.NewInstance().SendMessage(imeiL, messageS5, false);
 
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : SEND S5 | Status: {statusS5} : {messageS5}", Color.Teal);
@@ -251,13 +252,11 @@ namespace TN.Mobike.ToolLock.Core
                     // Receiver : *CMDR ,OM,123456789123456,200318123020,L0,0,1234,1497689816#
 
                     // Resend
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,L0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,L0#\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
 
-                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re L0 | Status: {status} : {message}", Color.Teal);
-
-                    //var messageD1On = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,{AppSettings.TimeTrackingLocation}#<LF>\n";
-                    //var statusD1On = SessionMap.NewInstance().SendMessage(imeiL, messageD1On, false);
+                    var messageD1On = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,{AppSettings.TimeTrackingLocation}#\n";
+                    var statusD1On = SessionMap.NewInstance().SendMessage(imeiL, messageD1On, false);
 
                     time = $"{Utilities.ConvertDateTime(comm[3]):yyyy-MM-dd HH:mm:ss}";
                     timeActive = $"{Utilities.UnixTimeStampToDateTime(comm[7].Replace("#", ""))}";
@@ -273,7 +272,7 @@ namespace TN.Mobike.ToolLock.Core
                     Console.WriteLine($" Timestamp : {timeActive}");
                     Console.ForegroundColor = ConsoleColor.White;
 
-                    //Console.WriteLine($"Send message turn on tracking location status: {statusD1On}");
+                    Console.WriteLine($"Send message turn on tracking location status: {statusD1On}");
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RESEND : {message ?? "No Message"}");
                     Console.WriteLine(status == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail");
 
@@ -284,11 +283,18 @@ namespace TN.Mobike.ToolLock.Core
                     Utilities.SetInvokeRTB(Rtbstatus, comm[5] == "0" ? $"Trạng thái : Mở thành công" : $"Trạng thái : Mở lỗi", Color.Tomato);
                     Utilities.SetInvokeRTB(Rtbstatus, $" Customer ID : {comm[6]}", Color.Tomato);
                     Utilities.SetInvokeRTB(Rtbstatus, $" Timestamp : {timeActive}", Color.Tomato);
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"---------------------------------------------------------------------------------------------------------------------------------------------------", Color.Black);
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re L0 | Status: {status} : {message}", Color.Teal);
+
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : TURN ON D1 | Status: {statusD1On} : {messageD1On} ", Color.Tomato);
+
                     Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
 
-                    //Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]} | Định vị tự động : Bật - {statusD1On}");
-                    Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]}");
+                    Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]} | Định vị tự động : Bật - {statusD1On}");
+                    //Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]}");
 
 
 
@@ -299,10 +305,8 @@ namespace TN.Mobike.ToolLock.Core
 
                     time = $"{Utilities.ConvertDateTime(comm[3]):yyyy-MM-dd HH:mm:ss}";
 
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,D0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,D0#\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
-
-                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re D0 | Status: {status} : {message}", Color.Teal);
 
 
                     var data12 = comm[17];
@@ -319,7 +323,7 @@ namespace TN.Mobike.ToolLock.Core
                     var data1 = comm[6];
                     var data0 = comm[5];
 
-                    var location = $@"https://maps.google.com?q={data3},{data5}";
+                    var location = $@"https://maps.google.com?q={data3},{data5}&imei={imei}";
 
 
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : D0 - POSITIONING COMMAND");
@@ -374,8 +378,9 @@ namespace TN.Mobike.ToolLock.Core
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : D0 - POSITIONING COMMAND", Color.Chocolate);
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER D0 : {command}", Color.Chocolate);
                     Utilities.SetInvokeRTB(Rtbstatus, $"Imei: {imei} | D0 - POSITIONING COMMAND | Thời gian: {time} | Trạng thái định vị (A: Active \\ V|VA: Not Active) : {data2} | Lat (Vĩ Độ): {data3} | Long (Kinh độ): {data5} | {data4} - {data6} | Point HDOP: {data8} | Altitude: {data10} | Mode (A: Định vị tự động\\ D: Khác\\ E: Ước lượng\\ N: Dữ liệu lỗi): {data12} | Resend : {status} | {location}", Color.Chocolate);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"---------------------------------------------------------------------------------------------------------------------------------------------------", Color.Black);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re D0 | Status: {status} : {message}", Color.Teal);
                     Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
-
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | D0 - POSITIONING COMMAND | Thời gian: {time} | Trạng thái định vị (A: Active \\ V|VA: Not Active) : {data2} | Lat (Vĩ Độ): {data3} | Long (Kinh độ): {data5} | {data4} - {data6} | Point HDOP: {data8} | Altitude: {data10} | Mode (A: Định vị tự động\\ D: Khác\\ E: Ước lượng\\ N: Dữ liệu lỗi): {data12} | Resend : {status} | {location}");
                     break;
@@ -387,7 +392,7 @@ namespace TN.Mobike.ToolLock.Core
 
 
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : D1 - TRACKING LOCATION COMMAND");
-                    Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER S5 : {command}");
+                    Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER D1 : {command}");
                     Console.WriteLine($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Location tracking each : {comm[5].Replace("#", "")} giây");
 
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : D1 - TRACKING LOCATION COMMAND", Color.Brown);
@@ -483,7 +488,7 @@ namespace TN.Mobike.ToolLock.Core
 
                     // *CMDR,OM,123456789123456,200318123020,W0,1#
 
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},W0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},W0#\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
 
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re W0 | Status: {status} : {message}", Color.Teal);

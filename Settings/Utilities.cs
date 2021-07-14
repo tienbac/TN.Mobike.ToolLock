@@ -381,7 +381,7 @@ namespace TN.Mobike.ToolLock.Settings
                 status.Clear();
             }
             status.SelectionColor = color;
-            status.AppendText($"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : {text}" + Environment.NewLine);
+            status.AppendText($"{text}" + Environment.NewLine);
             status.ScrollToCaret();
         }
     }

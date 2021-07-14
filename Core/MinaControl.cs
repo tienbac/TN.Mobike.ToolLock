@@ -138,42 +138,46 @@ namespace TN.Mobike.ToolLock.Core
             switch (key.ToUpper())
             {
                 case "L0": // MỞ KHÓA
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},L0,0,{uid},{timestamp}#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},L0,0,{uid},{timestamp}#\n";
                     break;
                 case "D0": // KIỂM TRA VỊ TRÍ
                     //message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D0#<LF>\n";
-                    message = $"*CMDS,OM,{imei},000000000000,D0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D0#<LF>\n";
                     break;
                 case "D1": // CÀI ĐẶT KHÓA TỰ ĐỘNG TRACKING VỊ TRÍ
                     //message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,0#<LF>\n";
-                    message = $"*CMDS,OM,{imei},000000000000,D1,{AppSettings.TimeTrackingLocation}#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,{AppSettings.TimeTrackingLocation}#\n";
+                    break;
+                case "D1O": // CÀI ĐẶT KHÓA TỰ ĐỘNG TRACKING VỊ TRÍ
+                    //message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,0#\n";
                     break;
                 case "S5": // KIỂM TRA THÔNG TIN KHÓA
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S5#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S5#\n";
                     break;
                 case "S8": // TÌM KIẾM XE ĐẠP
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S8,5,0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S8,5,0#\n";
                     break;
                 case "G0": // KIỂM TRA PHIÊN BẢN PHẦN MỀM
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},G0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},G0#\n";
                     break;
                 case "I0": // NHẬN SỐ ICCID ĐÃ GẮN TRÊN SIM
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},I0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},I0#\n";
                     break;
                 case "M0": // NHẬN ĐỊA CHỈ MAC BLUETOOTH
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},M0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},M0#\n";
                     break;
                 case "S0": // TẮT THIẾT BỊ
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S0#\n";
                     break;
                 case "S1": // KHỞI ĐỘNG LẠI THIẾT BỊ
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S1#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S1#\n";
                     break;
                 case "C0": // MỞ KHÓA BẰNG MÃ RFID
-                    message = $"*CMDR ,OM,{imei},{DateTime.Now:yyMMddHHmmss},C0,0,0,000000001A2B3C4D#<LF>\n";
+                    message = $"*CMDR ,OM,{imei},{DateTime.Now:yyMMddHHmmss},C0,0,0,000000001A2B3C4D#\n";
                     break;
                 case "C1": // CÀI ĐẶT MÃ SỐ CHO KHÓA
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},C1,0,000000001A2B3C4D#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},C1,0,000000001A2B3C4D#\n";
                     break;
                 default:
                     message = messageIn;
@@ -185,10 +189,10 @@ namespace TN.Mobike.ToolLock.Core
 
             Utilities.SetInvoke(Form1.lblMessageP, message);
 
-            var command = MinaSocket.AddBytes(new byte[] { (byte)0xFF, (byte)0xFF }, Encoding.ASCII.GetBytes(message));
+            //var command = MinaSocket.AddBytes(new byte[] { (byte)0xFF, (byte)0xFF }, Encoding.ASCII.GetBytes(message));
 
-            var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), command, false);
-            //var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), message, false);
+            //var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), command, false);
+            var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), message, false);
 
             Console.WriteLine(result == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success | {message}" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail | {message}");
 

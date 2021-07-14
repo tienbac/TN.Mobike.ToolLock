@@ -56,6 +56,7 @@ namespace TN.Mobike.ToolLock
             "L0 - Mở khóa",
             "D0 - Kiểm tra vị trí",
             "D1 - Tự động gửi vị trí",
+            "D1O - Tắt tự động gửi vị trí",
             "S5 - Kiểm tra thông tin",
             "S8 - Đổ chuông",
             "G0 - Kiểm tra phần mềm",
