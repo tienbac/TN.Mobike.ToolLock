@@ -147,7 +147,7 @@ namespace TN.Mobike.ToolLock
             // 
             this.rtbMessageReturn.Location = new System.Drawing.Point(312, 42);
             this.rtbMessageReturn.Name = "rtbMessageReturn";
-            this.rtbMessageReturn.Size = new System.Drawing.Size(476, 396);
+            this.rtbMessageReturn.Size = new System.Drawing.Size(780, 515);
             this.rtbMessageReturn.TabIndex = 10;
             this.rtbMessageReturn.Text = "";
             // 
@@ -208,7 +208,7 @@ namespace TN.Mobike.ToolLock
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1104, 569);
             this.Controls.Add(this.txtMessage);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.txtImei);

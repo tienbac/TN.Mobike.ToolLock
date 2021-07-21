@@ -158,7 +158,7 @@ namespace TN.Mobike.ToolLock.Core
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Q0 - SIGN IN COMMAND", Color.Blue);
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Q0 - IMEI = {imei}", Color.Blue);
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : RECEIVER Q0 : {command}", Color.Blue);
-                    Utilities.SetInvokeRTB(Rtbstatus, "Thời gian : {time}", Color.Blue);
+                    Utilities.SetInvokeRTB(Rtbstatus, $"Thời gian : {time}", Color.Blue);
                     Utilities.SetInvokeRTB(Rtbstatus, $"Pin       : {pin}", Color.Blue);
                     Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
@@ -246,6 +246,8 @@ namespace TN.Mobike.ToolLock.Core
 
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L1 - LOCK COMMAND | Thời gian : {time} | User : {comm[5]} | Thời gian hoạt động : {timeActive} | Thời gian đi (Phút) : {cycle} | Định vị tự động : Tắt - {statusD1Off} | Gửi kiểm tra trạng thái : {statusS5}");
+                    Utilities.WriteOperationLog("MinaOmni.Resend",$"Status: {status} | Message : {message}");
+                    
                     break;
                 case "L0":
 
@@ -296,7 +298,7 @@ namespace TN.Mobike.ToolLock.Core
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]} | Định vị tự động : Bật - {statusD1On}");
                     //Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | L0 - UNLOCK COMMAND | Thời gian : {time} | User : {comm[6]} | Thời gian hoạt động : {timeActive} | Lock (1: Lock \\ 0: Unlock) : {comm[5]}");
 
-
+                    Utilities.WriteOperationLog("MinaOmni.Resend", $"Status: {status} | Message : {message}");
 
                     break;
                 case "D0":
@@ -383,6 +385,7 @@ namespace TN.Mobike.ToolLock.Core
                     Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | D0 - POSITIONING COMMAND | Thời gian: {time} | Trạng thái định vị (A: Active \\ V|VA: Not Active) : {data2} | Lat (Vĩ Độ): {data3} | Long (Kinh độ): {data5} | {data4} - {data6} | Point HDOP: {data8} | Altitude: {data10} | Mode (A: Định vị tự động\\ D: Khác\\ E: Ước lượng\\ N: Dữ liệu lỗi): {data12} | Resend : {status} | {location}");
+                    Utilities.WriteOperationLog("MinaOmni.Resend", $"Status: {status} | Message : {message}");
                     break;
 
                 case "D1":
@@ -488,7 +491,7 @@ namespace TN.Mobike.ToolLock.Core
 
                     // *CMDR,OM,123456789123456,200318123020,W0,1#
 
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},W0#\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},Re,W0#\n";
                     status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
 
                     Utilities.SetInvokeRTB(Rtbstatus, $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : Re W0 | Status: {status} : {message}", Color.Teal);
@@ -528,6 +531,8 @@ namespace TN.Mobike.ToolLock.Core
                     Utilities.SetInvokeRTB(Rtbstatus, $"===========================================================================", Color.Black);
 
                     Utilities.WriteOperationLog("MinaOmni.HandCommand", $"Imei: {imei} | W0 - ALARMING COMMAND | Thời gian: {time} | Status: {statusAlarm}");
+
+                    Utilities.WriteOperationLog("MinaOmni.Resend", $"Status: {status} | Message: {message}");
 
                     //status = SessionMap.NewInstance().SendMessage(imeiL, message, false);
                     //Console.WriteLine($"Resend status: {status}");
@@ -684,6 +689,18 @@ namespace TN.Mobike.ToolLock.Core
 
 
                     break;
+                case "C0":
+                    var rfid = comm[7].Replace("#", "");
+                    if (MinaControl.listRFID.Contains(rfid))
+                    {
+                        int uid = 0;
+                        long timestamp = (long)(DateTime.UtcNow - MinaControl.Jan1st1970).TotalMilliseconds;
+                        message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},L0,0,{uid},{timestamp}#\n";
+
+                        var result = SessionMap.NewInstance().SendMessage(imeiL, message, false);
+                    }
+                    break;
+
                 default:
                     break;
             }

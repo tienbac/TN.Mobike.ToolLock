@@ -20,10 +20,11 @@ namespace TN.Mobike.ToolLock.Core
     class MinaControl
     {
         private static readonly int PORT = AppSettings.PortService;
-        private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static IoAcceptor acceptor;
 
         private static IPAddress ipAddress;
+        public static List<string> listRFID = new List<string>(){ "0080645D620E8904", "0080645CBAE54A04", "0081645D42171704" };
 
         public static void StartServer(Button btnConnect, RichTextBox rtbStatus, Button btnDisconnect, RichTextBox rtb)
         {
@@ -174,10 +175,10 @@ namespace TN.Mobike.ToolLock.Core
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},S1#\n";
                     break;
                 case "C0": // MỞ KHÓA BẰNG MÃ RFID
-                    message = $"*CMDR ,OM,{imei},{DateTime.Now:yyMMddHHmmss},C0,0,0,000000001A2B3C4D#\n";
+                    message = $"*CMDR ,OM,{imei},{DateTime.Now:yyMMddHHmmss},C0,0,0,0080645CBAE54A04#\n";
                     break;
                 case "C1": // CÀI ĐẶT MÃ SỐ CHO KHÓA
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},C1,0,000000001A2B3C4D#\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},C1,0,0080645CBAE54A04#\n";
                     break;
                 default:
                     message = messageIn;
@@ -189,10 +190,12 @@ namespace TN.Mobike.ToolLock.Core
 
             //Utilities.SetInvoke(Form1.lblMessageP, message);
 
-            //var command = MinaSocket.AddBytes(new byte[] { (byte)0xFF, (byte)0xFF }, Encoding.ASCII.GetBytes(message));
+            var command = MinaSocket.AddBytes(new byte[] { (byte)0xFF, (byte)0xFF }, Encoding.ASCII.GetBytes(message));
 
-            //var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), command, false);
-            var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), message, false);
+            Console.WriteLine(Encoding.ASCII.GetString(command));
+
+            var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), command, false);
+            //var result = SessionMap.NewInstance().SendMessage(Convert.ToInt64(imei), message, false);
 
             Console.WriteLine(result == 1 ? $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Success | {message}" : $"{DateTime.Now:yyyy/MM/dd HH:mm:ss.fff} : STATUS : Fail | {message}");
 

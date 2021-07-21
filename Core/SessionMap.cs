@@ -136,26 +136,32 @@ namespace TN.Mobike.ToolLock.Core
 
         public int SendMessage(long key, string message, bool isDebug = false)
         {
-            IoSession session = GetSession(key);
+            //IoSession session = GetSession(key);
 
-            if (session == null)
-            {
+            //if (session == null)
+            //{
 
-                Console.WriteLine($"IMEI: {key} has not connected the service");
+            //    Console.WriteLine($"IMEI: {key} has not connected the service");
 
 
-                Utilities.WriteErrorLog("MinaOmni.Unlock.1", $"Imei: {key} | Error: This lock has not connected the services !");
-                return STATUS_SEND_SESSION_NULL;
-            }
+            //    Utilities.WriteErrorLog("MinaOmni.Unlock.1", $"Imei: {key} | Error: This lock has not connected the services !");
+            //    return STATUS_SEND_SESSION_NULL;
+            //}
 
-            if (isDebug)
-            {
-                Console.WriteLine($"DEBUG write IP = {session.RemoteEndPoint.Serialize().Family}");
-                Console.WriteLine($"DEBUG write IP = {session.RemoteEndPoint.AddressFamily}");
-            }
+            //if (isDebug)
+            //{
+            //    Console.WriteLine($"DEBUG write IP = {session.RemoteEndPoint.Serialize().Family}");
+            //    Console.WriteLine($"DEBUG write IP = {session.RemoteEndPoint.AddressFamily}");
+            //}
 
-            session.Write(message);
-            return STATUS_SEND_SUCCESSFULLY;
+            //session.Write(message);
+            //return STATUS_SEND_SUCCESSFULLY;
+
+            var command = MinaSocket.AddBytes(new byte[] { (byte)0xFF, (byte)0xFF }, Encoding.ASCII.GetBytes(message));
+
+            Console.WriteLine(Encoding.ASCII.GetString(command));
+
+            return SendMessageArray(key, command, isDebug);
         }
 
         public int SendMessageArray(long key, byte[] messBytes, bool isDebug = false)
