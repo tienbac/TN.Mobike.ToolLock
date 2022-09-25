@@ -86,6 +86,7 @@ namespace TN.Mobike.ToolLock.Core
 
                 Utilities.SetInvokeBtn(btnDisconnect, Color.Red, false, "DISCONNECTED", Color.White);
                 Utilities.SetInvokeBtn(btnConnect, Color.DarkGray, true, "CONNECT", Color.Black);
+                Utilities.CloseLog();
 
                 Utilities.SetInvokeRTB(rtb, $"Stop sv: {ipAddress} | Stop on port: {PORT}", Color.Red, true);
 
@@ -143,7 +144,7 @@ namespace TN.Mobike.ToolLock.Core
                     break;
                 case "D0": // KIỂM TRA VỊ TRÍ
                     //message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D0#<LF>\n";
-                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D0#<LF>\n";
+                    message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D0#\n";
                     break;
                 case "D1": // CÀI ĐẶT KHÓA TỰ ĐỘNG TRACKING VỊ TRÍ
                     //message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},D1,0#<LF>\n";
@@ -179,6 +180,9 @@ namespace TN.Mobike.ToolLock.Core
                     break;
                 case "C1": // CÀI ĐẶT MÃ SỐ CHO KHÓA
                     message = $"*CMDS,OM,{imei},{DateTime.Now:yyMMddHHmmss},C1,0,0080645CBAE54A04#\n";
+                    break;
+                case "U0":
+                    message = $"*CMDS,NP,861123053783187,000000000000,U0,220,128,32434,C9,C7qn#\n";
                     break;
                 default:
                     message = messageIn;

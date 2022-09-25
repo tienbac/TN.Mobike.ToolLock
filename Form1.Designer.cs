@@ -65,7 +65,8 @@ namespace TN.Mobike.ToolLock
             "S0 - Tắt thiết bị",
             "S1 - Khởi động lại thiết bị",
             "C0 - Mở khóa bằng mã RFID",
-            "C1 - Cài đặt mã số cho khóa"});
+            "C1 - Cài đặt mã số cho khóa",
+            "U0 - Upgrade"});
             this.cbbKey.Location = new System.Drawing.Point(21, 311);
             this.cbbKey.Name = "cbbKey";
             this.cbbKey.Size = new System.Drawing.Size(210, 21);

@@ -51,6 +51,7 @@ namespace TN.Mobike.ToolLock
             var message = txtMessage.Text;
             if (!string.IsNullOrEmpty(message))
             {
+                var imei = txtImei.Text;
                 MinaControl.UnLock(rtbMessageReturn, "", "", message, true);
             }
             else
